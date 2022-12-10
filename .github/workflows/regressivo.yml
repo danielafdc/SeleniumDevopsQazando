@@ -2,14 +2,14 @@ name: Testes regressivos
 
 on:
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   RunTest:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions:checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Instalar Java 8
         uses: actions/setup-java@v2
@@ -32,9 +32,13 @@ jobs:
       - name: Run Test
         run: mvn test -Dtest=RunCucumber -Dbrowser=chrome-ci cluecumber-report:reporting
 
+      - name: Gerar relatório
+        if: always()
+        run: mvn cluecumber-report:reporting
+
       - name: Arquivar Relatório
         if: always()
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: report-execution
           path: "**/formated-report/"
